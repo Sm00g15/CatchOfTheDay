@@ -4,7 +4,7 @@ import Order from "./Order";
 import Inventory from "./Inventory";
 import sampleFishes from "../sample-fishes";
 import Fish from "./Fish";
-import base from '../base';
+import base from "../base";
 
 class App extends React.Component {
 	state = {
@@ -13,17 +13,22 @@ class App extends React.Component {
 	};
 	componentDidMount() {
 		//reinstate localstorage
-		const localStorageRef = localStorage.getItem(this.props.match.params.storeId)
-		if(localStorageRef) {
-			this.setState({order: JSON.parse(localStorageRef)})
+		const localStorageRef = localStorage.getItem(
+			this.props.match.params.storeId
+		);
+		if (localStorageRef) {
+			this.setState({ order: JSON.parse(localStorageRef) });
 		}
 		this.ref = base.syncState(`${this.props.match.params.storeId}/fishes`, {
 			context: this,
-			state: 'fishes'
-		}); 
+			state: "fishes"
+		});
 	}
 	componentDidUpdate() {
-		localStorage.setItem(this.props.match.params.storeId, JSON.stringify(this.state.order))
+		localStorage.setItem(
+			this.props.match.params.storeId,
+			JSON.stringify(this.state.order)
+		);
 	}
 	componentWillUnmount() {
 		base.removeBinding(this.ref);
@@ -39,52 +44,61 @@ class App extends React.Component {
 	};
 	updateFish = (key, updatedFish) => {
 		// take a copy of current fish state
-		const fishes = {...this.state.fishes};
+		const fishes = { ...this.state.fishes };
 		// update that state
 		fishes[key] = updatedFish;
 		// set that to state
-		this.setState({fishes: fishes})
+		this.setState({ fishes: fishes });
 	};
-	deleteFish = (key) => {
-		// take a copy of state 
-		const fishes = {...this.state.fishes}
-		// delete fish 
+	deleteFish = key => {
+		// take a copy of state
+		const fishes = { ...this.state.fishes };
+		// delete fish
 		fishes[key] = null;
 		// update state
-		this.setState({fishes: fishes})
-	}
+		this.setState({ fishes: fishes });
+	};
 
 	loadSampleFishes = () => {
 		this.setState({ fishes: sampleFishes });
 	};
-	addToOrder = (key) => {
+	addToOrder = key => {
 		// take a copy of state
-		const order = {...this.state.order};
+		const order = { ...this.state.order };
 		// either add or update number in order
 		order[key] = order[key] + 1 || 1;
 		//set state
-		this.setState({order: order})
+		this.setState({ order: order });
 	};
-	removeFromOrder = (key) => {
+	removeFromOrder = key => {
 		// get a copy of the state
-		const order = {...this.state.order}
+		const order = { ...this.state.order };
 		// delete a fish
 		delete order[key];
 		// update the state
-		this.setState({order: order})
-	}
+		this.setState({ order: order });
+	};
 	render() {
 		return (
 			<div className="catch-of-the-day">
 				<div className="menu">
-					<Header age="100" tagline="Fresh Seafood Market" />
+					<Header tagline="Fresh Seafood Market" />
 					<ul className="fishes">
 						{Object.keys(this.state.fishes).map(key => (
-							<Fish index={key} removeFromOrder={this.removeFromOrder} addToOrder={this.addToOrder} key={key} details={this.state.fishes[key]} />
+							<Fish
+								index={key}
+								addToOrder={this.addToOrder}
+								key={key}
+								details={this.state.fishes[key]}
+							/>
 						))}
 					</ul>
 				</div>
-				<Order fishes={this.state.fishes} order={this.state.order} />
+				<Order
+					fishes={this.state.fishes}
+					removeFromOrder={this.removeFromOrder}
+					order={this.state.order}
+				/>
 				<Inventory
 					loadSampleFishes={this.loadSampleFishes}
 					addFish={this.addFish}
