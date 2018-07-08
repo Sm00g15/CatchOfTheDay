@@ -5,6 +5,7 @@ import Inventory from "./Inventory";
 import sampleFishes from "../sample-fishes";
 import Fish from "./Fish";
 import base from "../base";
+// Depolyed to Netlify
 
 class App extends React.Component {
 	state = {
